@@ -7,8 +7,29 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
+ 
+ <!-- load properties file :sport.properties-->
+ <context:property-placeholder location="classpath:sport.properties"/>
     <!-- Define your beans here -->
-    <bean id="myCoach" class="suraj_pkg.TrackCoach"></bean>
+    <!-- 
+	Add a logger config to see logging messages.		
+	- For more detailed logs, set values to "FINEST"
+	- For info on logging levels, see: http://www.vogella.com/tutorials/Logging/article.html
+ -->
+ 
+    <bean id="myLoggerConfig" class="suraj_pkg.MyLoggerConfig" init-method="initLogger">
+    	<property name="rootLoggerLevel" value="FINE" />
+    	<property name="printedLoggerLevel" value="FINE"/>
+    </bean>
+    <!-- -Dependency Injection -Constructor Injection -->
+    <bean id="myFortune" class="suraj_pkg.HappyFortuneService"></bean>
+    
+    <bean id="myCoach" class="suraj_pkg.TrackCoach" init-method="doMyStuff" destroy-method="doMyCleanStuff"><constructor-arg ref="myFortune"></constructor-arg></bean>
+    <bean id="myCricket" class="suraj_pkg.CricketCoach">
+    <property name="fortuneService" ref="myFortune"/>
+    <property name="emailAddress" value="${foo.email}"/>
+    <property name="team" value="${foo.team}"/>
+    </bean>
 </beans>
 
 
